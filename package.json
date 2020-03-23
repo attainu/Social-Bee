@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/attainu/Social-Bee/issues"
   },
-  "homepage": "https://github.com/attainu/Social-Bee#readme"
+  "homepage": "https://github.com/attainu/Social-Bee#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.5"
+  }
 }
