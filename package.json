@@ -1,0 +1,20 @@
+{
+  "name": "Social-Bee",
+  "version": "1.0.0",
+  "description": "Project done by Piyush and Atanu",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/attainu/Social-Bee.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/attainu/Social-Bee/issues"
+  },
+  "homepage": "https://github.com/attainu/Social-Bee#readme"
+}
