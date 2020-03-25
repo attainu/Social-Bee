@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 //defining the ngo schema
-const ngoUserSchema = new Schema(
+const ngoSchema = new Schema(
   {
     name: {
       type: String,
@@ -21,7 +21,9 @@ const ngoUserSchema = new Schema(
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please add a valid email"
-      ]
+      ],
+      required: true,
+      trim: true
     },
     ngoName: {
       type: String,
@@ -59,4 +61,4 @@ const ngoUserSchema = new Schema(
 );
 
 //exporting the schema
-module.exports = mongoose.model("ngoUser", ngoUserSchema);
+module.exports = mongoose.model("ngoUser", ngoSchema);

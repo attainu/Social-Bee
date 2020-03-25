@@ -5,9 +5,29 @@ const Schema = mongoose.Schema;
 //defining the company employee schema
 const empSchema = new Schema(
   {
+    //emp_number is not same as emp Object Id it is the 6 digit number given by the company
+    emp_number: {
+      type: Number,
+      required: [true, "Please provide the employee number"],
+      trim: true
+    },
     emp_name: {
       type: String,
       required: [true, "Please provide name"],
+      trim: true
+    },
+    emp_email: {
+      type: String,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Please add a valid email"
+      ],
+      required: [true, "Please provide email"],
+      trim: true
+    },
+    epm_password: {
+      type: String,
+      required: [true, "Please provide password"],
       trim: true
     },
     emp_access_lvl: {
@@ -21,7 +41,7 @@ const empSchema = new Schema(
       required: true,
       trim: true
     },
-    dep_id: [{ type: Schema.Types.ObjectId, ref: emp_department }]
+    dep_id: [{ type: Schema.Types.ObjectId, ref: "dep" }]
   },
   { timestamps: true }
 );
