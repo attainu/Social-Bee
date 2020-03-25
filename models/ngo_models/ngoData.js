@@ -1,26 +1,26 @@
 //importing the required packages
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 //defining the ngo schema
 const ngoSchema = new Schema(
   {
-    name: {
+    Repname: {
       type: String,
-      required: [true, "Please provide your name"],
+      required: [true, 'Please provide Representative name'],
       unique: true,
       trim: true,
       maxlength: [20, "Name can't be more than 20 characters"]
     },
-    phone: {
+    Repphone: {
       type: Number,
-      maxlength: [15, "Phone number can not be longer than 15 characters"]
+      maxlength: [15, 'Phone number can not be longer than 15 characters']
     },
     email: {
       type: String,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please add a valid email"
+        'Please add a valid email'
       ],
       required: true,
       trim: true
@@ -34,19 +34,19 @@ const ngoSchema = new Schema(
     },
     ngoDescription: {
       type: String,
-      required: [true, "Please add a description"],
-      maxlength: [500, "Description can not be more than 500 characters"]
+      required: [true, 'Please add a description'],
+      maxlength: [500, 'Description can not be more than 500 characters']
     },
     ngoWebsiteUrl: {
       type: String,
       match: [
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-        "Please use a valid URL with HTTP or HTTPS"
+        'Please use a valid URL with HTTP or HTTPS'
       ]
     },
     ngoAddress: {
       type: String,
-      required: [true, "Please add an address"]
+      required: [true, 'Please add an address']
     },
     ngoIsregistered: {
       type: Boolean
@@ -54,11 +54,15 @@ const ngoSchema = new Schema(
     Group: {
       type: [String],
       required: true,
-      enum: ["Human", "Animal", "Nature"]
+      enum: ['Human', 'Animal', 'Nature']
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     }
   },
   { timestamps: true }
 );
 
 //exporting the schema
-module.exports = mongoose.model("ngoUser", ngoSchema);
+module.exports = mongoose.model('ngoData', ngoSchema);

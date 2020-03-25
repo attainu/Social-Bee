@@ -8,7 +8,7 @@ const ngoReview = new Schema(
     ngo: [
       {
         type: Schema.Types.ObjectId,
-        ref: "ngoUser"
+        ref: "ngoData"
       }
     ],
     reviewContent: {
