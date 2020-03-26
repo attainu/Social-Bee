@@ -24,5 +24,6 @@ const ngoReview = new Schema(
   },
   { timestamps: true }
 );
+
 //exporting the schema
 module.exports = mongoose.model("review", ngoReview);

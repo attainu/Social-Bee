@@ -31,10 +31,11 @@ const UserSchema = new Schema({
 //exporting the schema
 module.exports = mongoose.model('User', UserSchema);
 
+
 /*Note to atanu
 Can we make a single User Schema for both Admin and User?
 by specifying a option in the schema itself?
 */
 
 // resetPasswordToken: String,
-// resetPasswordExpire: ___  we need to add this in future for Tokens
+// resetPasswordExpire: ___  we need to add this in  for Tokens
