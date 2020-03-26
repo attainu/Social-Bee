@@ -51,10 +51,15 @@ const ngoSchema = new Schema(
     ngoIsregistered: {
       type: Boolean
     },
-    Group: {
-      type: [String],
+    group: {
+      type: String,
       required: true,
-      enum: ["Human", "Animal", "Nature"]
+      enum: ["Human", "Animal", "Nature"],
+      category: {
+        type: String,
+        required: true,
+        enum: ["Human", "Animal", "Nature"]
+      }
     }
   },
   { timestamps: true }

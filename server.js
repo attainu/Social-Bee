@@ -20,3 +20,6 @@ app.use(express.urlencoded({ extended: false }));
 app.listen(PORT, () => {
   console.log(`Express server listing on ${PORT}`);
 });
+// app.use(‘/uploads’, path.join(__dirname, ‘static’));
+// app.use(‘/uploads’, express.static(path.join(__dirname, ‘static’)));
+
