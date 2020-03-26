@@ -8,7 +8,7 @@ const ngoReview = new Schema(
     ngo: [
       {
         type: Schema.Types.ObjectId,
-        ref: "ngoUser"
+        ref: "ngoData"
       }
     ],
     reviewContent: {
@@ -24,5 +24,6 @@ const ngoReview = new Schema(
   },
   { timestamps: true }
 );
+
 //exporting the schema
 module.exports = mongoose.model("review", ngoReview);

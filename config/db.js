@@ -1,12 +1,36 @@
-const mongoose= require("mongoose")
+const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/Social-Bee",{
-        useNewUrlParser:true,
-        useUnifiedTopology:true,
-        useCreateIndex:true
-    })
-.then(()=>console.log("MongoDB connected locally for testing Schemas"))
-.catch((err)=>{
-    console.log(err.message)
-})
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+      useFindAndModify: true
+    });
+    console.log(`MongoDB is up @ MongoAtlas :${conn.connection.host}`);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
 
+
+
+//Local connection -MongoDB-Compass
+// const connectDB = async () => {
+//   try {
+//     const conn = await mongoose.connect(process.env.MONGO_LOCAL_URI, {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//       useCreateIndex: true,
+//       useFindAndModify: true
+//     });
+//     console.log(`MongoDB is up @ mongoLocal :${conn.connection.host}`);
+//   } catch (error) {
+//     console.error(error);
+//     process.exit(1);
+//   }
+// };
+
+module.exports = connectDB;
