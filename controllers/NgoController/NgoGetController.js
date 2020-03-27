@@ -7,8 +7,12 @@ var ngoGetController = {};
 
 //defining the get functions
 //default route
-ngoGetController.ngo = (req, res) => {
+ngoGetController.api = (req, res) => {
   res.sendStatus(200, "AOK");
+};
+ngoGetController.ngo = (req, res) => {
+  const text = "AOKKKK";
+  res.status(200).json(text);
 };
 
 //exporting the modules

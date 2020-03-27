@@ -3,10 +3,11 @@ const express = require("express");
 var NgoGetRouter = express.Router();
 
 //setting up a destructured object to import all the controller functions
-var { ngo } = require("../../controllers/NgoController/NgoGetController");
+var { api, ngo } = require("../../controllers/NgoController/NgoGetController");
 
 //defining the routes
-NgoGetRouter.get("/ngo", ngo);
+NgoGetRouter.get("/api", api);
+NgoGetRouter.get("/api/ngo", ngo);
 
 //exporting the module
 module.exports = NgoGetRouter;

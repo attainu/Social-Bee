@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(NgoGetRoutes);
 app.use(NgoApiRoutes);
 
-app.use("/api", route);
+// app.use("/api", route);
 
 //setting up the server port for listening
 app.listen(PORT, () => {
