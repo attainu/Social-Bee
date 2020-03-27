@@ -34,3 +34,6 @@ app.listen(PORT, () => {
     `Express server Listing on Port: ${PORT} & running in :${process.env.NODE_ENV} `
   );
 });
+// app.use(‘/uploads’, path.join(__dirname, ‘static’));
+// app.use(‘/uploads’, express.static(path.join(__dirname, ‘static’)));
+
