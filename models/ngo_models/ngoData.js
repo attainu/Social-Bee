@@ -49,6 +49,9 @@ const ngoSchema = new Schema(
       type: Number,
       required: [true, 'Please add Number of Workers']
     },
+    ngoAccomodation: {
+      type: Boolean
+    },
     ngoWebsiteUrl: {
       type: String,
       match: [

@@ -6,6 +6,8 @@ const dotenv = require("dotenv");
 const NgoGetRoutes = require("./routes/NgoRoutes/NgoGetRoutes");
 const NgoApiRoutes = require("./routes/NgoRoutes/NgoApiRoutes");
 
+const route = require("./routes/user");
+
 //importing the DB connection localhost/Atlas in the server file
 const connectDB = require("./config/db");
 
@@ -29,6 +31,8 @@ app.use(express.urlencoded({ extended: false }));
 //setting up the ngo routes
 app.use(NgoGetRoutes);
 app.use(NgoApiRoutes);
+
+app.use("/api", route);
 
 //setting up the server port for listening
 app.listen(PORT, () => {
