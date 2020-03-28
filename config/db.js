@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 //       useCreateIndex: true,
 //       useFindAndModify: true
 //     });
-//     console.log(`MongoDB is up @ MongoAtlas :${conn.connection.host}`);
+//     console.log(`MongoDB is up @ MongoAtlas :${conn.connection.host}`.green.underline.bold);
 //   } catch (error) {
 //     console.error(error);
 //     process.exit(1);
@@ -25,9 +25,11 @@ const connectDB = async () => {
       useCreateIndex: true,
       useFindAndModify: true
     });
-    console.log(`MongoDB is up @ mongoLocal :${conn.connection.host}`);
+    console.log(
+      `MongoDB is up @ mongoLocal :${conn.connection.host}`.green.underline.bold
+    );
   } catch (error) {
-    console.error(error);
+    console.error(error,``.red);
     process.exit(1);
   }
 };

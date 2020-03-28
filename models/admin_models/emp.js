@@ -25,7 +25,7 @@ const empSchema = new Schema(
       required: [true, "Please provide email"],
       trim: true
     },
-    epm_password: {
+    emp_password: {
       type: String,
       required: [true, "Please provide password"],
       trim: true

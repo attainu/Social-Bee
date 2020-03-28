@@ -17,7 +17,8 @@ const ngoReview = new Schema(
     },
     rating: {
       type: Number,
-      maxlength: 5,
+      min: [1, "Rating must be aminimum of 1"],
+      max: [5, "Rating cannot be more than 5 "],
       required: [true, "Please enter a rating"],
       trim: true
     }
