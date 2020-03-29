@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 const colors = require("colors");
 const logger = require("./middlewares/logger");
+const errorHandler = require("./middlewares/error_handler");
 
 //importing the ngo related routes
 // const NgoGetRoutes = require("./routes/NgoRoutes/NgoGetRoutes");
@@ -42,6 +43,9 @@ app.use(logger);
 
 //mounting the route to a default path
 app.use("/api/v1/admin", admin);
+
+//setting up the custom error handler have to put it after the routes in order to let javascript catch it
+app.use(errorHandler);
 
 //setting up the server port for listening
 app.listen(PORT, () => {

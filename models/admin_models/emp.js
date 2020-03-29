@@ -9,7 +9,8 @@ const empSchema = new Schema(
     emp_number: {
       type: Number,
       required: [true, "Please provide the employee number"],
-      trim: true
+      trim: true,
+      unique: true
     },
     emp_name: {
       type: String,
@@ -23,7 +24,8 @@ const empSchema = new Schema(
         "Please add a valid email"
       ],
       required: [true, "Please provide email"],
-      trim: true
+      trim: true,
+      unique: true
     },
     emp_password: {
       type: String,
@@ -38,7 +40,7 @@ const empSchema = new Schema(
     },
     emp_desgination: {
       type: String,
-      required: true,
+      required: [true, "Please provide designation"],
       trim: true
     },
     dep_id: [{ type: Schema.Types.ObjectId, ref: "dep" }]
