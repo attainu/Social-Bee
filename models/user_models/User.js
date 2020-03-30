@@ -5,48 +5,44 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const UserSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: [true, 'Please provide your name'],
-      trim: true
-    },
-    email: {
-      type: String,
-      required: [true, 'Please provide your email'],
-      unique: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please add a valid email'
-      ],
-      trim: true
-    },
-    role: {
-      type: String,
-      enum: ['user', 'ngoRep'],
-      default: 'user'
-    },
-    profilepic: {
-      type: String,
-      default: 'no-photo.png'
-    },
-    password: {
-      type: String,
-      required: [true, 'Please add a password'],
-      minlength: 3,
-      select: false,
-      trim: true
-    },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
-    createdAt: {
-      type: Date,
-      default: Date.now
-    }
+const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide your name'],
+    trim: true
   },
-  { timestamps: true }
-);
+  email: {
+    type: String,
+    required: [true, 'Please provide your email'],
+    unique: true,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please add a valid email'
+    ],
+    trim: true
+  },
+  role: {
+    type: String,
+    enum: ['user', 'ngoRep'],
+    default: 'user'
+  },
+  profilepic: {
+    type: String,
+    default: 'no-photo.png'
+  },
+  password: {
+    type: String,
+    required: [true, 'Please add a password'],
+    minlength: 6,
+    select: false
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function(next) {

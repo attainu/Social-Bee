@@ -116,14 +116,35 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     .digest('hex');
 
   const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() }
+    resetPasswordToken
+    // ,resetPasswordExpire: { $gt: Date.now() }
   });
 
+  if (!user) {
+    return next(new ErrorResponse('Invalid token', 400));
+  }
+
   //Let's set a new password
-  user.password - req.body.password;
+  user.password = req.body.password;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpire = undefined;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+});
+
+// @desc      Update password
+// @route     PUT /api/v1/auth/updatepassword
+// @access    Private
+exports.updatePassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+
+  // Check current password
+  if (!(await user.matchPassword(req.body.currentPassword))) {
+    return next(new ErrorResponse('Password is incorrect', 401));
+  }
+
+  user.password = req.body.newPassword;
   await user.save();
 
   sendTokenResponse(user, 200, res);
