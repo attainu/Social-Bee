@@ -1,4 +1,4 @@
-//creating a custome error response class which extends the Error object.
+//creating a custom error response class which extends the Error object.
 class ErrorResponse extends Error {
   constructor(message, statusCode) {
     super(message);

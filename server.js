@@ -1,11 +1,14 @@
 //importing all the base modules
-const express = require("express");
-const path = require("path");
-const morgan = require("morgan");
-const dotenv = require("dotenv");
-const colors = require("colors");
-const logger = require("./middlewares/logger");
-const errorHandler = require("./middlewares/error_handler");
+const express = require('express');
+const path = require('path');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const colors = require('colors');
+const logger = require('./middlewares/logger');
+const errorHandler = require('./middlewares/error_handler');
+
+//initillizaing the express module
+const app = express();
 
 //importing the ngo related routes
 // const NgoGetRoutes = require("./routes/NgoRoutes/NgoGetRoutes");
@@ -13,13 +16,16 @@ const errorHandler = require("./middlewares/error_handler");
 // const route = require("./routes/user");
 
 //importing the admin related routes
-const admin = require("./routes/AdminRoutes/adminRoutes");
+// const admin = require("./routes/AdminRoutes/adminRoutes");
+
+//importing User related routes
+const auth = require('./routes/auth');
 
 //importing the DB connection localhost/Atlas in the server file
-const connectDB = require("./config/db");
+const connectDB = require('./config/db');
 
 //load env variables
-dotenv.config({ path: "./config/config.env" });
+dotenv.config({ path: './config/config.env' });
 
 //declaring the port variable
 const PORT = process.env.PORT || 8080;
@@ -27,11 +33,8 @@ const PORT = process.env.PORT || 8080;
 //call to DB
 connectDB();
 
-//initillizaing the express module
-const app = express();
-
 //setting up the middlewares
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger);
@@ -42,7 +45,8 @@ app.use(logger);
 // app.use("/api", route);
 
 //mounting the route to a default path
-app.use("/api/v1/admin", admin);
+// app.use("/api/v1/admin", admin);
+app.use('/api/v1/auth', auth);
 
 //setting up the custom error handler have to put it after the routes in order to let javascript catch it
 app.use(errorHandler);
