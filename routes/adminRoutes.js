@@ -15,7 +15,7 @@ var {
   updateEmp_Dep,
   deleteEmp,
   deleteDep
-} = require("../../controllers/AdminApiController/adminController");
+} = require("../controllers/adminController");
 
 //defining the routes
 

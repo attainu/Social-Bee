@@ -1,15 +1,15 @@
 //importing the database connection
-require("../../config/db");
+require("../config/db");
 
 //importing the custom error response module
-const ErrorResponse = require("../../utils/error_response");
+const ErrorResponse = require("../utils/error_response");
 
 //importing the asyncHandler module
-const asyncHandler = require("../../middlewares/async_handler");
+const asyncHandler = require("../middlewares/async_handler");
 
 //importing the admin model schemas
-const Employee = require("../../models/admin_models/Emp");
-const EmpDepartment = require("../../models/admin_models/Emp_department");
+const Employee = require("../models/admin_models/Emp");
+const EmpDepartment = require("../models/admin_models/Emp_department");
 
 //declaring an empty object to store and export the methods
 var empController = {};
