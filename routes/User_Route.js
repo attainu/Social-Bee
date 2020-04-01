@@ -8,7 +8,7 @@ const {
   resetPassword,
   updateprofilepic
   // updatePassword
-} = require('../controllers/auth');
+} = require('../controllers/UserController');
 
 const router = express.Router();
 
