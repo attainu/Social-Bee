@@ -16,7 +16,7 @@ const app = express();
 const admin = require("./routes/adminRoutes");
 
 //importing User related routes
-const auth = require("./routes/User_Route");
+const user = require("./routes/User_Route");
 
 require("./controllers/payment")(app);
 
@@ -42,7 +42,7 @@ app.use(logger);
 
 //mounting the route to a default path
 app.use("/api/v1/admin", admin);
-app.use("/api/v1/auth", auth);
+app.use("/api/v1/user", user);
 
 //setting up the custom error handler have to put it after the routes in order to let javascript catch it
 app.use(errorHandler);

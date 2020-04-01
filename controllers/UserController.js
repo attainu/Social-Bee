@@ -1,8 +1,15 @@
-const User = require('../models/user_models/User');
-const ErrorResponse = require('../utils/error_response');
-const asyncHandler = require('../middlewares/async_handler');
-const sendEmail = require('../utils/sendEmail');
-const crypto = require('crypto'); //this is a builtin in express ,need not add
+const User = require("../models/user_models/User");
+const ErrorResponse = require("../utils/error_response");
+const asyncHandler = require("../middlewares/async_handler");
+const sendEmail = require("../utils/sendEmail");
+const crypto = require("crypto"); //this is a builtin in express ,need not add
+
+//@desc     Default admin route
+//@route    GET /api/v1/user
+//@access   public
+exports.defUser = (req, res, next) => {
+  res.status(200).json({ success: true, message: "Welcome to Social-Bee" });
+};
 
 // @desc      Register user
 // @route     POST /api/v1/auth/register
@@ -29,21 +36,21 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   // Validate emil & password
   if (!email || !password) {
-    return next(new ErrorResponse('Please provide an email and password', 400));
+    return next(new ErrorResponse("Please provide an email and password", 400));
   }
 
   // Check for user
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user) {
-    return next(new ErrorResponse('Invalid credentials', 401));
+    return next(new ErrorResponse("Invalid credentials", 401));
   }
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
 
   if (!isMatch) {
-    return next(new ErrorResponse('Invalid credentials', 401));
+    return next(new ErrorResponse("Invalid credentials", 401));
   }
 
   sendTokenResponse(user, 200, res);
@@ -68,7 +75,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorResponse('There is no user with that email', 404));
+    return next(new ErrorResponse("There is no user with that email", 404));
   }
 
   // Get reset token
@@ -79,7 +86,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
   // Create reset url  http
   const resetUrl = `${req.protocol}://${req.get(
-    'host'
+    "host"
   )}/api/v1/auth/resetpassword/${resetToken}`;
 
   const message = `You are receiving this email from SocialBee because you have requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}
@@ -87,13 +94,13 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Password reset token',
+      subject: "Password reset token",
       message
     });
 
     res
       .status(200)
-      .json({ success: true, data: 'Email has been sent.Please check' });
+      .json({ success: true, data: "Email has been sent.Please check" });
   } catch (err) {
     console.log(err);
     user.resetPasswordToken = undefined;
@@ -101,7 +108,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    return next(new ErrorResponse('Email could not be sent,Sorry', 500));
+    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
   }
 });
 
@@ -111,9 +118,9 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   //Get hashed Token
   const resetPasswordToken = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(req.params.resettoken)
-    .digest('hex');
+    .digest("hex");
 
   const user = await User.findOne({
     resetPasswordToken
@@ -121,7 +128,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorResponse('Invalid token', 400));
+    return next(new ErrorResponse("Invalid token", 400));
   }
 
   //Let's set a new password
@@ -132,8 +139,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
   sendTokenResponse(user, 200, res);
 });
-
-
 
 // @desc      Update User Profile Picture from the Default picture
 // @route     PUT /api/v1/auth/updatedprofilepic
@@ -154,7 +159,6 @@ exports.updateprofilepic = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 //this is a custom function to avoid Repeatation
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
@@ -168,13 +172,13 @@ const sendTokenResponse = (user, statusCode, res) => {
     httpOnly: true
   };
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     options.secure = true;
   }
 
   res
     .status(statusCode)
-    .cookie('token', token, options)
+    .cookie("token", token, options)
     .json({
       success: true,
       token
@@ -188,12 +192,9 @@ const sendTokenResponse = (user, statusCode, res) => {
 //
 //
 
-
-
-
 // @desc      Update password
 // @route     PUT /api/v1/auth/updatepassword
-// @access    
+// @access
 // exports.updatePassword = asyncHandler(async (req, res, next) => {
 //   const user = await User.findById(req.user.id).select('+password');
 
