@@ -18,7 +18,11 @@ const admin = require("./routes/adminRoutes");
 //importing User related routes
 const user = require("./routes/User_Route");
 
-require("./controllers/payment")(app);
+//importing the Ngo Related routes
+//not sure about this approach need to rethink this as ngo data manipulation needs to be protected.using this now just for testing purposes
+const ngo = require("./routes/Ngo_Routes");
+
+// require("./controllers/payment")(app);
 
 //importing the DB connection localhost/Atlas in the server file
 const connectDB = require("./config/db");
@@ -43,6 +47,8 @@ app.use(logger);
 //mounting the route to a default path
 app.use("/api/v1/admin", admin);
 app.use("/api/v1/user", user);
+//not sure about this approach need to rethink this as ngo data manipulation needs to be protected. using this now just for testing purposes
+app.use("/api/v1/ngo", ngo);
 
 //setting up the custom error handler have to put it after the routes in order to let javascript catch it
 app.use(errorHandler);

@@ -47,5 +47,6 @@ const empSchema = new Schema(
   },
   { timestamps: true }
 );
+
 //exporting the schema
 module.exports = mongoose.model("emp", empSchema);

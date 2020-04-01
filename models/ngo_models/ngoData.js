@@ -1,5 +1,7 @@
 //importing the required packages
 const mongoose = require("mongoose");
+const slugify = require("slugify");
+// const geocoder = require("../../utils/geoCoder");
 const Schema = mongoose.Schema;
 
 //defining the ngo schema
@@ -31,6 +33,7 @@ const ngoSchema = new Schema(
       trim: true,
       maxlength: [50, "Name can't be more than 50 characters"]
     },
+    slug: String,
     ngoDescription: {
       type: String,
       required: [true, "Please add a description"],
@@ -58,20 +61,18 @@ const ngoSchema = new Schema(
         "Please use a valid URL with HTTP or HTTPS"
       ]
     },
-    // ngoAddress: {
-    //   type: String,
-    //   required: [true, "Please add an address"]
-    // },
+    ngoAddress: {
+      type: String,
+      required: [true, "Please add an address"]
+    },
     location: {
       //setting up the location field for GeoJson points
       type: {
         type: String,
-        enum: ["Point"],
-        required: true
+        enum: ["Point"]
       },
       coordinates: {
         type: [Number],
-        required: true,
         index: "2dsphere"
       },
       formattedAddress: String,
@@ -120,24 +121,29 @@ const ngoSchema = new Schema(
   },
   { timestamps: true }
 );
+//Slugify code for formatting the ngo name
+ngoSchema.pre("save", function(next) {
+  this.slug = slugify(this.ngoName, { lower: true, replacement: "_" });
+  next();
+});
+
+//Geocode & create location filed
+// ngoSchema.pre("save", async function(next) {
+//   const loc = await geocoder.geocode(this.ngoAddress);
+//   this.location = {
+//     type: "Point",
+//     coordinates: [loc[0].longitude, loc[0].latitude],
+//     formattedAddress: loc[0].formattedAddress,
+//     street: loc[0].streetName,
+//     city: loc[0].city,
+//     state: loc[0].state,
+//     zipcode: loc[0].zipcode,
+//     country: loc[0].country
+//   };
+//   //to stop ngoAddress from getting saved in the database as the location object contains the detailed address whcih will be saved.
+//   this.ngoAddress = undefined;
+//   next();
+// });
 
 //exporting the schema
 module.exports = mongoose.model("ngoData", ngoSchema);
-
-/*Need to add the following parameter fot GEO_JSON DATA
- */
-
-// const citySchema = new mongoose.Schema({
-//   name: String,
-//   location: {
-//     type: {
-//       type: String, // Don't do `{ location: { type: String } }`
-//       enum: ['Point'], // 'location.type' must be 'Point'
-//       required: true
-//     },
-//     coordinates: {
-//       type: [Number],
-//       required: true
-//     }
-//   }
-// });

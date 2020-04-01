@@ -1,6 +1,3 @@
-//importing the database connection
-require("../config/db");
-
 //importing the custom error response module
 const ErrorResponse = require("../utils/error_response");
 
@@ -25,7 +22,7 @@ empController.defAdmin = (req, res, next) => {
 
 //@desc     employee department data addition route
 //@route    POST /api/v1/admin/add/department
-//@access   public
+//@access   private
 empController.addDep = asyncHandler(async (req, res, next) => {
   let depData = new EmpDepartment(req.body);
   await depData.save();
@@ -123,7 +120,7 @@ empController.signup = asyncHandler(async (req, res, next) => {
 //@route    POST /api/v1/admin/show/employee
 //@access   private
 empController.showAllEmp = asyncHandler(async (req, res, next) => {
-  let showAllEmp = await Employee.find();
+  let showAllEmp = await Employee.find().populate("dep_id");
   res.status(200).json({
     success: "All Employee data",
     count: showAllEmp.length,
@@ -135,7 +132,7 @@ empController.showAllEmp = asyncHandler(async (req, res, next) => {
 //@route    POST /api/v1/admin/show/employee/:id
 //@access   private
 empController.showOneEmp = asyncHandler(async (req, res, next) => {
-  let showOneEmp = await Employee.findById(req.params.id);
+  let showOneEmp = await Employee.findById(req.params.id).populate("dep_id");
   if (!showOneEmp) {
     //if condition to check if id exsists or not the database
     return next(
