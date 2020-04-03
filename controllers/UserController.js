@@ -12,7 +12,7 @@ exports.defUser = (req, res, next) => {
 };
 
 // @desc      Register user
-// @route     POST /api/v1/auth/register
+// @route     POST /api/v1/user/register
 // @access    Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role } = req.body;

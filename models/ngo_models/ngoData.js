@@ -29,7 +29,6 @@ const ngoSchema = new Schema(
     ngoName: {
       type: String,
       required: [true, "Please provide NGO's name"],
-      unique: true,
       trim: true,
       maxlength: [50, "Name can't be more than 50 characters"]
     },
@@ -126,7 +125,10 @@ ngoSchema.pre("save", function(next) {
   this.slug = slugify(this.ngoName, { lower: true, replacement: "_" });
   next();
 });
-
+// ngoSchema.pre("save", function(next) {
+//   this.user = req.user;
+//   next();
+// });
 //Geocode & create location filed
 // ngoSchema.pre("save", async function(next) {
 //   const loc = await geocoder.geocode(this.ngoAddress);

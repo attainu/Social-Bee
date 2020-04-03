@@ -1,0 +1,34 @@
+[
+  {
+    "dep_name": "Marketing",
+    "number_of_emp": 87
+  },
+  {
+    "dep_name": "Legal",
+    "number_of_emp": 90
+  },
+  {
+    "dep_name": "Human Resources",
+    "number_of_emp": 31
+  },
+  {
+    "dep_name": "Engineering",
+    "number_of_emp": 60
+  },
+  {
+    "dep_name": "Support",
+    "number_of_emp": 66
+  },
+  {
+    "dep_name": "Research and Development",
+    "number_of_emp": 84
+  },
+  {
+    "dep_name": "Sales",
+    "number_of_emp": 68
+  },
+  {
+    "dep_name": "Services",
+    "number_of_emp": 21
+  }
+]

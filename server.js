@@ -4,6 +4,10 @@ const path = require("path");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const colors = require("colors");
+//importing the DB connection localhost/Atlas in the server file
+const connectDB = require("./config/db");
+//load env variables
+dotenv.config({ path: "./config/config.env" });
 const logger = require("./middlewares/logger");
 const errorHandler = require("./middlewares/error_handler");
 
@@ -23,12 +27,6 @@ const user = require("./routes/User_Route");
 const ngo = require("./routes/Ngo_Routes");
 
 // require("./controllers/payment")(app);
-
-//importing the DB connection localhost/Atlas in the server file
-const connectDB = require("./config/db");
-
-//load env variables
-dotenv.config({ path: "./config/config.env" });
 
 //declaring the port variable
 const PORT = process.env.PORT || 8080;
