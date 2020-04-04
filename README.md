@@ -30,11 +30,11 @@ npm run dev
 > If you want to seed the data independently into the database ,then use
 
 
-# Destroy all data in Database
 ```
+# Add all data in Database
 node seeder -add
-```
 
-# Dump all data into Database
-```node seeder -delete
+# Delete all data into Databasw
+node seeder -delete
+```
 ```
