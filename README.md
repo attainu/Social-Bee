@@ -25,16 +25,16 @@ npm run dev
 > This command would first "DUMP THE DATA" into your Database and then start the Server in Development Mode,on your first time usage
 
 
-## Database Seeder
+# Database Seeder
 
 > If you want to seed the data independently into the database ,then use
 
 
-## Destroy all data in Database
+# Destroy all data in Database
 ```
 node seeder -add
 ```
 
-##  Dump all data into Database
+# Dump all data into Database
 ```node seeder -delete
 ```
