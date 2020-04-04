@@ -10,6 +10,7 @@ var {
   showAllngo,
   showNgo,
   updateNgo,
+  photoUpload,
   deleteNgo,
   showNgoQ,
   showNgoQSelectSort,
@@ -26,6 +27,8 @@ ngoRouter.route("/show_ngo").get(protect, showAllngo);
 ngoRouter.route("/show_ngo/:id").get(protect, showNgo);
 //updating one ngo data
 ngoRouter.route("/update/:id").put(protect, updateNgo);
+//uploading a image to a ngo data
+ngoRouter.route("/:id/photo").put(protect, photoUpload);
 //deleting ngo data
 ngoRouter.route("/delete/:id").delete(protect, deleteNgo);
 //displaying one ngo data using req.query and some advance filtring

@@ -1,9 +1,10 @@
 //importing all the base modules
-const express = require("express");
 const path = require("path");
+const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const colors = require("colors");
+const fileupload = require("express-fileupload");
 //importing the DB connection localhost/Atlas in the server file
 const connectDB = require("./config/db");
 //load env variables
@@ -13,6 +14,9 @@ const errorHandler = require("./middlewares/error_handler");
 
 //initillizaing the express module
 const app = express();
+
+//setting the public folder as static so that we can view the images
+app.use(express.static(path.join(__dirname, "public")));
 
 //importing the ngo related routes
 
@@ -35,9 +39,22 @@ const PORT = process.env.PORT || 8080;
 connectDB();
 
 //setting up the middlewares
-app.use(morgan("dev"));
+
+//setting an if block for morgan so it only logs if in development mode
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
+//express middleware to accept json data form postman
 app.use(express.json());
+
+//express middleware to accept form data form postman and/or forntend webpages if api is used
 app.use(express.urlencoded({ extended: false }));
+
+//file uploading middleware
+app.use(fileupload());
+
+//custom logger middleaware not so important does exactly what morgan does but in rudamentry manner. I made it just for fun.
 app.use(logger);
 
 //setting up the ngo routes

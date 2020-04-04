@@ -1,3 +1,6 @@
+//imopting the required packages
+const path = require("path");
+
 //importing the custom error response module
 const ErrorResponse = require("../utils/error_response");
 
@@ -73,6 +76,66 @@ ngoController.updateNgo = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ success: "Ngo Information Updated", Ngo_Data: updateNgo });
+});
+
+//@desc     uploading photo
+//@route    PUT /api/v1/ngo/:id/photo
+//@access   private
+ngoController.photoUpload = asyncHandler(async (req, res, next) => {
+  let ngo = await NgoData.findById(req.params.id);
+
+  //if condition to check if id exsists or not the database
+  if (!ngo) {
+    return next(
+      new ErrorResponse(
+        `Document or Record not found with id:${req.params.id}. Check ID`,
+        404
+      )
+    );
+  }
+
+  //if conditionto check a file was uploaded or not
+  if (!req.files) {
+    return next(
+      new ErrorResponse(`Please select a image or Photo to upload`, 400)
+    );
+  }
+
+  //storing the file object recived form postman in an variable
+  const file = req.files.file;
+
+  //checking to see if the file sent is an image or not
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Plese select and image file`, 415));
+  }
+
+  //checking if the image file size is more than 2 mb or not
+  if (file.size > process.env.MAX_FILE_SIZE) {
+    return next(
+      new ErrorResponse(
+        `Image size can not be more than ${process.env.MAX_FILE_SIZE} bytes i.e ${process.env.MAX_FILE_SIZE_MB}MB`,
+        413
+      )
+    );
+  }
+
+  //creating a custom file name to stroe in databse so that nameing conflicts doesn't happen if 2 or more user upload the same image file.
+  file.name = `photo_${ngo._id}${path.parse(file.name).ext}`;
+
+  //uploading the file in the database
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+    if (err) {
+      console.error(err);
+      return next(
+        new ErrorResponse(`Server Error: File could not uploaded`, 500)
+      );
+    }
+    await NgoData.findByIdAndUpdate(req.params.id, {
+      ngoImg: `photos/${file.name}`
+    });
+
+    res.status(200).json({ success: "Image uploaded", data: file.name });
+  });
 });
 
 //@desc     delete a ngo data
