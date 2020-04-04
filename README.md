@@ -1,4 +1,4 @@
 # Social-Bee
 
-![Social Bee Cover Image](https://tinyurl.com/sdgtaq4 "This Project is created by Piyush Mahapatra & Atanu Paul")
+[![Social-Bee-API-Google-Slides.png](https://i.postimg.cc/hv1T5zdK/Social-Bee-API-Google-Slides.png)](https://postimg.cc/4HnYK3P0)
 
