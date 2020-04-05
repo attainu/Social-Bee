@@ -31,8 +31,6 @@ const user = require("./routes/User_Route");
 //importing the Ngo Related routes
 const ngo = require("./routes/Ngo_Routes");
 
-// require("./controllers/payment")(app);
-
 //declaring the port variable
 const PORT = process.env.PORT || 8080;
 
