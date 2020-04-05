@@ -14,7 +14,8 @@ var {
   updateEmp,
   updateEmp_Dep,
   deleteEmp,
-  deleteDep
+  deleteDep,
+  deleteUser,
 } = require("../controllers/adminController");
 
 //defining the routes
@@ -39,8 +40,10 @@ adminRouter.route("/update/employee/:id").put(updateEmp);
 adminRouter.route("/update/department/:id").put(updateEmp_Dep);
 //deleting an employee data
 adminRouter.route("/delete/employee/:id").delete(deleteEmp);
-//deleting an department data
+//deleting a department data
 adminRouter.route("/delete/department/:id").delete(deleteDep);
+//deleting a user data
+adminRouter.route("/delete/user/:id").delete(deleteUser);
 
 //exporting the router module
 module.exports = adminRouter;

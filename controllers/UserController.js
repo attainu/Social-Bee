@@ -22,7 +22,7 @@ exports.register = asyncHandler(async (req, res, next) => {
     name,
     email,
     password,
-    role
+    role,
   });
 
   sendTokenResponse(user, 200, res);
@@ -60,11 +60,14 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/auth/me
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user.id).populate({
+    path: "ngoOwned",
+    select: "ngoName ngoDescription ngoRegistrationNumber ngoFounded",
+  });
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -95,7 +98,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     await sendEmail({
       email: user.email,
       subject: "Password reset token",
-      message
+      message,
     });
 
     res
@@ -123,7 +126,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     .digest("hex");
 
   const user = await User.findOne({
-    resetPasswordToken
+    resetPasswordToken,
     // ,resetPasswordExpire: { $gt: Date.now() }
   });
 
@@ -145,17 +148,17 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateprofilepic = asyncHandler(async (req, res, next) => {
   const fieldsToUpdate = {
-    profilepic: req.body.profilepic
+    profilepic: req.body.profilepic,
   };
 
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({
     success: true,
-    data: user
+    data: user,
   });
 });
 
@@ -169,20 +172,17 @@ const sendTokenResponse = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true
+    httpOnly: true,
   };
 
   if (process.env.NODE_ENV === "production") {
     options.secure = true;
   }
 
-  res
-    .status(statusCode)
-    .cookie("token", token, options)
-    .json({
-      success: true,
-      token
-    });
+  res.status(statusCode).cookie("token", token, options).json({
+    success: true,
+    token,
+  });
 };
 
 //

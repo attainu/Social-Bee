@@ -7,6 +7,7 @@ const asyncHandler = require("../middlewares/async_handler");
 //importing the admin model schemas
 const Employee = require("../models/admin_models/Emp");
 const EmpDepartment = require("../models/admin_models/Emp_department");
+const User = require("../models/user_models/User");
 
 //declaring an empty object to store and export the methods
 var empController = {};
@@ -37,7 +38,7 @@ empController.showDep = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: "All Department",
     count: showDep.length,
-    showDep: showDep
+    showDep: showDep,
   });
 });
 
@@ -69,7 +70,7 @@ empController.updateEmp_Dep = asyncHandler(async (req, res, next) => {
     req.body,
     {
       new: true,
-      runValidators: true
+      runValidators: true,
     }
   );
   if (!updateEmp_Dep) {
@@ -83,7 +84,7 @@ empController.updateEmp_Dep = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json({
     success: "Employee Information Updated",
-    updateEmp_Dep: updateEmp_Dep
+    updateEmp_Dep: updateEmp_Dep,
   });
 });
 
@@ -103,7 +104,7 @@ empController.deleteDep = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json({
     success: "Department Information Deleted",
-    deleteDep: deleteDep
+    deleteDep: deleteDep,
   });
 });
 
@@ -124,7 +125,7 @@ empController.showAllEmp = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: "All Employee data",
     count: showAllEmp.length,
-    showAllEmp: showAllEmp
+    showAllEmp: showAllEmp,
   });
 });
 
@@ -153,7 +154,7 @@ empController.showOneEmp = asyncHandler(async (req, res, next) => {
 empController.updateEmp = asyncHandler(async (req, res, next) => {
   let updateEmp = await Employee.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
   if (!updateEmp) {
     //if condition to check if id exsists or not the database
@@ -186,6 +187,26 @@ empController.deleteEmp = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ success: "Employee Information Deleted", deleteEmp: deleteEmp });
+});
+
+//@desc     delete an user data
+//@route    DELETE /api/v1/admin/delete/user/:id
+//@access   private
+empController.deleteUser = asyncHandler(async (req, res, next) => {
+  let deleteUser = await User.findById(req.params.id);
+  if (!deleteUser) {
+    //if condition to check if id exsists or not the database
+    return next(
+      new ErrorResponse(
+        `Document or Record not found with id:${req.params.id}. Check ID`,
+        404
+      )
+    );
+  }
+  deleteUser.remove();
+  res
+    .status(200)
+    .json({ success: "User Information Deleted", User: deleteUser });
 });
 //exporting the module
 module.exports = empController;

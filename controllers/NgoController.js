@@ -36,11 +36,14 @@ ngoController.addNgo = asyncHandler(async (req, res, next) => {
 //@route    GET /api/v1/ngo/show_ngo
 //@access   private
 ngoController.showAllngo = asyncHandler(async (req, res, next) => {
-  let showAllNgo = await NgoData.find().populate("user");
+  let showAllNgo = await NgoData.find().populate({
+    path: "user",
+    select: "name email",
+  });
   res.status(200).json({
     success: "All Ngo data",
     count: showAllNgo.length,
-    Ngo_Details: showAllNgo
+    Ngo_Details: showAllNgo,
   });
 });
 
@@ -48,11 +51,14 @@ ngoController.showAllngo = asyncHandler(async (req, res, next) => {
 //@route    GET /api/v1/ngo/show_ngo/:id
 //@access   private
 ngoController.showNgo = asyncHandler(async (req, res, next) => {
-  let showNgo = await NgoData.findById(req.params.id).populate("user");
+  let showNgo = await NgoData.findById(req.params.id).populate({
+    path: "user",
+    select: "name email",
+  });
   res.status(200).json({
     success: "Ngo data",
     count: showNgo.length,
-    Ngo_Details: showNgo
+    Ngo_Details: showNgo,
   });
 });
 
@@ -62,7 +68,7 @@ ngoController.showNgo = asyncHandler(async (req, res, next) => {
 ngoController.updateNgo = asyncHandler(async (req, res, next) => {
   let updateNgo = await NgoData.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
   if (!updateNgo) {
     //if condition to check if id exsists or not the database
@@ -123,7 +129,7 @@ ngoController.photoUpload = asyncHandler(async (req, res, next) => {
   file.name = `photo_${ngo._id}${path.parse(file.name).ext}`;
 
   //uploading the file in the database
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
     if (err) {
       console.error(err);
       return next(
@@ -131,7 +137,7 @@ ngoController.photoUpload = asyncHandler(async (req, res, next) => {
       );
     }
     await NgoData.findByIdAndUpdate(req.params.id, {
-      ngoImg: `photos/${file.name}`
+      ngoImg: `photos/${file.name}`,
     });
 
     res.status(200).json({ success: "Image uploaded", data: file.name });
@@ -165,7 +171,7 @@ ngoController.showNgoQ = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: "Ngo data",
     count: showNgo.length,
-    Ngo_Details: showNgo
+    Ngo_Details: showNgo,
   });
 });
 
@@ -179,22 +185,20 @@ ngoController.showNgoQSelectSort = asyncHandler(async (req, res, next) => {
   const removeFileds = ["select", "sort"];
 
   //looping to remove the unwanted fields
-  removeFileds.forEach(param => delete reqQuery[param]);
+  removeFileds.forEach((param) => delete reqQuery[param]);
 
   //Select fileds query
   if (req.query.select && req.query.sort) {
     const fields = req.query.select.split(",").join(" ");
     const sortBy = req.query.sort.split(",").join(" ");
-    query = NgoData.find()
-      .select(fields)
-      .sort(sortBy);
+    query = NgoData.find().select(fields).sort(sortBy);
   }
 
   let showNgo = await query;
   res.status(200).json({
     success: "Ngo data",
     count: showNgo.length,
-    Ngo_Details: showNgo
+    Ngo_Details: showNgo,
   });
 });
 
@@ -208,7 +212,7 @@ ngoController.showNgoPageInit = asyncHandler(async (req, res, next) => {
   const removeFileds = ["page", "limit"];
 
   //looping to remove the unwanted fields
-  removeFileds.forEach(param => delete reqQuery[param]);
+  removeFileds.forEach((param) => delete reqQuery[param]);
 
   // pagination
   const page = parseInt(req.query.page, 10) || 1;
@@ -216,9 +220,7 @@ ngoController.showNgoPageInit = asyncHandler(async (req, res, next) => {
   const startIndex = (page - 1) * limit;
   const lastIndex = page * limit;
 
-  query = NgoData.find()
-    .skip(startIndex)
-    .limit(limit);
+  query = NgoData.find().skip(startIndex).limit(limit);
 
   let showNgo = await query;
   const totalDoc = await NgoData.countDocuments();
@@ -229,21 +231,21 @@ ngoController.showNgoPageInit = asyncHandler(async (req, res, next) => {
   if (lastIndex < totalDoc) {
     pageination.next = {
       page: page + 1,
-      limit
+      limit,
     };
   }
 
   if (startIndex > 0) {
     pageination.prev = {
       page: page - 1,
-      limit
+      limit,
     };
   }
   res.status(200).json({
     success: "Ngo data",
     count: showNgo.length,
     pageination,
-    Ngo_Details: showNgo
+    Ngo_Details: showNgo,
   });
 });
 //exporting the module
