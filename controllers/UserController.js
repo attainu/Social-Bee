@@ -180,8 +180,8 @@ const sendTokenResponse = (user, statusCode, res) => {
   }
 
   res.status(statusCode).cookie("token", token, options).json({
-    success: true,
-    token,
+    success: "This is the cookie token",
+    UserToken: token,
   });
 };
 

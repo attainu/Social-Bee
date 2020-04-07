@@ -16,7 +16,7 @@ var empController = {};
 
 //@desc     Default admin route
 //@route    GET /api/v1/admin
-//@access   public
+//@access   private
 empController.defAdmin = (req, res, next) => {
   res.status(200).json({ success: true, message: "Welcome to Admin Pannel" });
 };
@@ -137,6 +137,17 @@ empController.showOneEmp = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ success: "Employee Information", showOneEmp: showOneEmp });
+});
+
+//@desc     Show currently Logged in Employee
+//@route    POST /api/v1/admin/show/employee/profile
+//@access   private
+empController.MyProfile = asyncHandler(async (req, res, next) => {
+  const user = await Employee.findById(req.user.id);
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
 });
 
 //@desc     updating an employee data

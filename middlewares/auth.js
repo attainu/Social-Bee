@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const asyncHandler = require('./async_handler');
-const ErrorResponse = require('../utils/error_response');
-const User = require('../models/user_models/User');
+const jwt = require("jsonwebtoken");
+const asyncHandler = require("./async_handler");
+const ErrorResponse = require("../utils/error_response");
+const User = require("../models/user_models/User");
 
 //Protect Routes
 
@@ -11,14 +11,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
   //converting the bearer-token to an array and checking
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
+    req.headers.authorization.startsWith("Bearer")
   ) {
-    token = req.headers.authorization.split(' ')[1];
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.token) {
+    token = req.coookies.token;
   }
 
   //Making sure Token exists
   if (!token) {
-    return next(new ErrorResponse('Not Authorised to Access this Route!', 401));
+    return next(new ErrorResponse("Not Authorised to Access this Route!", 401));
   }
 
   try {
@@ -31,13 +33,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
     req.user = await User.findById(decodedToken.id);
     next();
   } catch (err) {
-    return next(new ErrorResponse('Not Authorised to Access this Route!', 401));
+    return next(new ErrorResponse("Not Authorised to Access this Route!", 401));
   }
 });
-
-//   else if(req.cookies.token){
-//       token =req.coookies.token
-//   }
 
 //The below function is to check the role -->user and ngoRep and decide accordingly,if he should
 //be given access to a particular route

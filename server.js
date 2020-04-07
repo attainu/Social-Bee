@@ -4,6 +4,7 @@ const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const colors = require("colors");
+const coookieParser = require("cookie-parser");
 const fileupload = require("express-fileupload");
 
 //importing the DB connection localhost/Atlas in the server file
@@ -18,6 +19,9 @@ const errorHandler = require("./middlewares/error_handler");
 
 //initillizaing the express module
 const app = express();
+
+//stteing the cookie-parser middleware
+app.use(coookieParser());
 
 //setting the public folder as static so that we can view the images
 app.use(express.static(path.join(__dirname, "public")));
@@ -68,10 +72,9 @@ app.use("/api/v1/ngo", ngo);
 app.use(errorHandler);
 
 //to handle ERROR for non existent routes/missing routes
-app.get('*', function(req, res){
-  res.sendFile(path.join(__dirname+'/public'+'/static'+'/404.html'))
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname + "/public" + "/static" + "/404.html"));
 });
-
 
 //setting up the server port for listening
 app.listen(PORT, () => {

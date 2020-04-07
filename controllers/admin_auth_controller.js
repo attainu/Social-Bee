@@ -29,12 +29,9 @@ empAuthController.signup = asyncHandler(async (req, res, next) => {
   let empData = new Employee(req.body);
   await empData.save();
 
-  //create token
-  const token = empData.getJwtToken();
   res.status(201).json({
-    success: "Employee data added",
-    empData: empData,
-    Jwt_Token: token,
+    success: "Employee Signed Up",
+    New_Employee_Data: empData,
   });
 });
 
@@ -65,12 +62,27 @@ empAuthController.login = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Password mismatch", 401));
   }
   //create token
-  const token = empData.getJwtToken();
-  res.status(200).json({
-    success: "Loged In",
-    empData: empData,
-    Jwt_Token: token,
-  });
+  sendToken(empData, 200, res);
 });
+
+//custom function to get the jwt token and create a cookie and send response
+const sendToken = (empData, statusCode, res) => {
+  const token = empData.getJwtToken();
+  const options = {
+    expireTime: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === "production") {
+    options.secure = true;
+  }
+  res
+    .status(statusCode)
+    .cookie("token", token, options)
+    .json({ success: "This is the cookie token", AdminToken: token });
+};
+
+
 //exporting the module
 module.exports = empAuthController;
