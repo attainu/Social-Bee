@@ -1,5 +1,6 @@
 //importing the required packages
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -60,9 +61,16 @@ empSchema.pre("save", async function (next) {
 });
 
 //generating jwt token for login
-empSchema.methods.getJwtToken=function (){
-  
-}
+empSchema.methods.getJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_KEY, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
+// method to match the plain text password with the encrypted password in the database for login
+empSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.emp_password);
+};
 
 //exporting the schema
 module.exports = mongoose.model("emp", empSchema);
