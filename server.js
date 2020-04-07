@@ -24,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //importing the admin related routes
 const admin = require("./routes/adminRoutes");
+const adminAuth = require("./routes/admin_auth_route");
 
 //importing User related routes
 const user = require("./routes/User_Route");
@@ -59,7 +60,7 @@ app.use(logger);
 //setting up the ngo routes
 
 //mounting the route to a default path
-app.use("/api/v1/admin", admin);
+app.use("/api/v1/admin", admin, adminAuth);
 app.use("/api/v1/user", user);
 app.use("/api/v1/ngo", ngo);
 

@@ -1,4 +1,5 @@
 //importing the required packages
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -10,43 +11,58 @@ const empSchema = new Schema(
       type: Number,
       required: [true, "Please provide the employee number"],
       trim: true,
-      unique: true
+      unique: true,
     },
     emp_name: {
       type: String,
       required: [true, "Please provide name"],
-      trim: true
+      trim: true,
     },
     emp_email: {
       type: String,
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        "Please add a valid email"
+        "Please add a valid email",
       ],
       required: [true, "Please provide email"],
       trim: true,
-      unique: true
+      unique: true,
     },
     emp_password: {
       type: String,
       required: [true, "Please provide password"],
-      trim: true
+      minlength: 6,
+      select: false,
+      trim: true,
     },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
     emp_access_lvl: {
       type: Number,
       required: [true, "Enter access level number from 1-5"],
       maxlength: 1,
-      trim: true
+      trim: true,
     },
     emp_desgination: {
       type: String,
       required: [true, "Please provide designation"],
-      trim: true
+      trim: true,
     },
-    dep_id: [{ type: Schema.Types.ObjectId, ref: "dep" }]
+    dep_id: [{ type: Schema.Types.ObjectId, ref: "dep" }],
   },
   { timestamps: true }
 );
+
+//encrypting the password
+empSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt(10);
+  this.emp_password = await bcrypt.hash(this.emp_password, salt);
+});
+
+//generating jwt token for login
+empSchema.methods.getJwtToken=function (){
+  
+}
 
 //exporting the schema
 module.exports = mongoose.model("emp", empSchema);

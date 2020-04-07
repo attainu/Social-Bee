@@ -108,15 +108,6 @@ empController.deleteDep = asyncHandler(async (req, res, next) => {
   });
 });
 
-//@desc     Admin regisration/signup route
-//@route    POST /api/v1/admin/signup
-//@access   public
-empController.signup = asyncHandler(async (req, res, next) => {
-  let empData = new Employee(req.body);
-  await empData.save();
-  res.status(201).json({ success: "Employee data added", empData: empData });
-});
-
 //@desc     displaying all the employee data
 //@route    POST /api/v1/admin/show/employee
 //@access   private
