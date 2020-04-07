@@ -67,6 +67,12 @@ app.use("/api/v1/ngo", ngo);
 //setting up the custom error handler have to put it after the routes in order to let javascript catch it
 app.use(errorHandler);
 
+//to handle ERROR for non existent routes/missing routes
+app.get('*', function(req, res){
+  res.sendFile(path.join(__dirname+'/public'+'/static'+'/404.html'))
+});
+
+
 //setting up the server port for listening
 app.listen(PORT, () => {
   console.log(
