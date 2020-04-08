@@ -1,4 +1,5 @@
 //importing the required packages
+const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
@@ -56,6 +57,9 @@ const empSchema = new Schema(
 
 //encrypting the password
 empSchema.pre("save", async function (next) {
+  if (!this.isModified("emp_password")) {
+    next();
+  }
   const salt = await bcrypt.genSalt(10);
   this.emp_password = await bcrypt.hash(this.emp_password, salt);
 });
@@ -70,6 +74,21 @@ empSchema.methods.getJwtToken = function () {
 // method to match the plain text password with the encrypted password in the database for login
 empSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.emp_password);
+};
+
+//generating and hashing the password reset token
+empSchema.methods.getResetToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  //hashing the token and storing in the database
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  //setting the expire time
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 //exporting the schema

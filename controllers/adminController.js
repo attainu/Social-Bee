@@ -5,9 +5,9 @@ const ErrorResponse = require("../utils/error_response");
 const asyncHandler = require("../middlewares/async_handler");
 
 //importing the admin model schemas
-const Employee = require("../models/admin_models/Emp");
-const EmpDepartment = require("../models/admin_models/Emp_department");
-const User = require("../models/user_models/User");
+const Employee = require("../models/admin_models/emp");
+const EmpDepartment = require("../models/admin_models/emp_department");
+const User = require("../models/user_models/user");
 
 //declaring an empty object to store and export the methods
 var empController = {};
@@ -147,6 +147,31 @@ empController.MyProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: user,
+  });
+});
+
+//@desc     Employee Forgot password
+//@route    POST /api/v1/admin/forgotpassword
+//@access   public
+empController.ForgotPassword = asyncHandler(async (req, res, next) => {
+  const { emp_email } = req.body;
+  const emp = await Employee.findOne({ emp_email });
+
+  if (!emp) {
+    //if condition to check if id exsists or not the database
+    return next(
+      new ErrorResponse(
+        `Document or Record not found with email:${req.body.email}. Check Email`,
+        404
+      )
+    );
+  }
+  //get reset token
+  const resetToken = emp.getResetToken();
+  await emp.save({ validateBeforeSave: false });
+  res.status(200).json({
+    success: true,
+    data: emp,
   });
 });
 

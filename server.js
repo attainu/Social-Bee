@@ -31,10 +31,10 @@ const admin = require("./routes/adminRoutes");
 const adminAuth = require("./routes/admin_auth_route");
 
 //importing User related routes
-const user = require("./routes/User_Route");
+const user = require("./routes/user_Route");
 
 //importing the Ngo Related routes
-const ngo = require("./routes/Ngo_Routes");
+const ngo = require("./routes/ngo_Routes");
 
 //declaring the port variable
 const PORT = process.env.PORT || 8080;

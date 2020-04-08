@@ -8,7 +8,7 @@ const ErrorResponse = require("../utils/error_response");
 const asyncHandler = require("../middlewares/async_handler");
 
 //importing the ngoData schema
-const NgoData = require("../models/ngo_models/NgoData");
+const NgoData = require("../models/ngo_models/ngoData");
 
 //declaring an empty object to store and export the methods
 var ngoController = {};

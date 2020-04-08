@@ -1,3 +1,6 @@
+//importing the rrquired pacakages
+const nodemailer = require("nodemailer");
+
 //importing the custom error response module
 const ErrorResponse = require("../utils/error_response");
 
@@ -5,7 +8,7 @@ const ErrorResponse = require("../utils/error_response");
 const asyncHandler = require("../middlewares/async_handler");
 
 //importing the admin model schemas
-const Employee = require("../models/admin_models/Emp");
+const Employee = require("../models/admin_models/emp");
 
 //declaring an empty object to store and export the methods
 var empAuthController = {};
@@ -26,6 +29,25 @@ empAuthController.defAuthAdmin = (req, res, next) => {
 //@route    POST /api/v1/admin/signup
 //@access   public
 empAuthController.signup = asyncHandler(async (req, res, next) => {
+  let { emp_email, emp_password } = req.body;
+  //sending confirmation mail
+  let transpoter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.SMTP_EMAIL, // generated ethereal user
+      pass: process.env.SMTP_PASSWORD, // generated ethereal password
+    },
+  });
+
+  await transpoter.sendMail({
+    from: process.env.FROM_EMAIL,
+    to: emp_email,
+    subject: `Welcome To ${process.env.FROM_NAME}`,
+    html: `<h1>Welcome To ${process.env.FROM_NAME}</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non convallis urna. Nam quam ipsum, imperdiet eget lacus sed, finibus aliquam mi. Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.</p><p></p>This is Your Email and password.<ul><li>Email:${emp_email}</li><li>Password:${emp_password}</li<</ul><p>Thank You.</p>`,
+  });
+
   let empData = new Employee(req.body);
   await empData.save();
 
@@ -82,7 +104,6 @@ const sendToken = (empData, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: "This is the cookie token", AdminToken: token });
 };
-
 
 //exporting the module
 module.exports = empAuthController;

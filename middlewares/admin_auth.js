@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("./async_handler");
 const ErrorResponse = require("../utils/error_response");
 //importing the admin model schemas
-const Employee = require("../models/admin_models/Emp");
+const Employee = require("../models/admin_models/emp");
 
 // route protection function
 exports.AdminAuthProtect = asyncHandler(async (req, res, next) => {

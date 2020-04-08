@@ -9,7 +9,7 @@ const {
   resetPassword,
   updateprofilepic
   // updatePassword
-} = require("../controllers/UserController");
+} = require("../controllers/userController");
 
 const router = express.Router();
 
