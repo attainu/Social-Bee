@@ -1,8 +1,9 @@
 //importing the rrquired pacakages
 const nodemailer = require("nodemailer");
-
-//importing the custom error response module
+const crypto = require("crypto");
+//importing utilites
 const ErrorResponse = require("../utils/error_response");
+const sendEmail = require("../utils/sendEmail");
 
 //importing the asyncHandler module
 const asyncHandler = require("../middlewares/async_handler");
@@ -31,28 +32,42 @@ empAuthController.defAuthAdmin = (req, res, next) => {
 empAuthController.signup = asyncHandler(async (req, res, next) => {
   let { emp_email, emp_password } = req.body;
   //sending confirmation mail
-  let transpoter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_EMAIL, // generated ethereal user
-      pass: process.env.SMTP_PASSWORD, // generated ethereal password
-    },
-  });
+  const message = `Welcome To ${process.env.FROM_NAME} family,
 
-  await transpoter.sendMail({
-    from: process.env.FROM_EMAIL,
-    to: emp_email,
-    subject: `Welcome To ${process.env.FROM_NAME}`,
-    html: `<h1>Welcome To ${process.env.FROM_NAME}</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec non convallis urna. Nam quam ipsum, imperdiet eget lacus sed, finibus aliquam mi. Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.</p><p></p>This is Your Email and password.<ul><li>Email:${emp_email}</li><li>Password:${emp_password}</li<</ul><p>Thank You.</p>`,
-  });
+  We welcome you to our small team and hope you have a long working relationship with us. 
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nononvallis. 
+  Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.
+  You are a part of our company now and this is your official Email and password. You will need this to login into our admin platform to perform your duties keep them safe. Good Luck.
+
+  Email:  ${emp_email}
+  Password:  ${emp_password}
+
+  Thank You,
+  ${process.env.FROM_NAME}
+  ${process.env.DUMMY_ADDRESS},
+  ${process.env.DUMMY_CITY},
+  ${process.env.DUMMY_STATE},
+  Zip Code: ${process.env.DUMMY_ZIPCODE},
+  Phone Number: ${process.env.DUMMY_PHONE_NUMBER}
+  Locate Us: ${process.env.DUMMY_MAP_LOCATION}
+  `;
+  try {
+    await sendEmail({
+      email: emp_email,
+      subject: "Hi This is Jhon Doe form Social Bee",
+      message,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
+  }
 
   let empData = new Employee(req.body);
   await empData.save();
 
   res.status(201).json({
     success: "Employee Signed Up",
+    data: "Confirmations mail sent",
     New_Employee_Data: empData,
   });
 });
@@ -85,6 +100,83 @@ empAuthController.login = asyncHandler(async (req, res, next) => {
   }
   //create token
   sendToken(empData, 200, res);
+});
+
+//@desc     Employee Forgot password
+//@route    POST /api/v1/admin/forgotpassword
+//@access   public
+empAuthController.ForgotPassword = asyncHandler(async (req, res, next) => {
+  const { emp_email } = req.body;
+  const emp = await Employee.findOne({ emp_email });
+
+  if (!emp) {
+    //if condition to check if id exsists or not the database
+    return next(
+      new ErrorResponse(
+        `Document or Record not found with email:${req.body.email}. Check Email`,
+        404
+      )
+    );
+  }
+  //get reset token
+  const resetToken = emp.getResetToken();
+  await emp.save({ validateBeforeSave: false });
+  //creating reset url
+  const resetUrl = `${req.protocol}://${req.get(
+    "host"
+  )}/api/v1/admin/resetpassword/${resetToken}`;
+
+  const message = `You are receiving this email from SocialBee because you have requested the reset of a password. Copy paste the link in your broswer to reset your password: \n\n ${resetUrl}
+  \n\n  Link will expire in next 10 minutes`;
+  try {
+    await sendEmail({
+      email: emp_email,
+      subject: "Password reset token",
+      message,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Email has been sent.Please check",
+      data: emp,
+    });
+  } catch (err) {
+    console.log(err);
+    emp.resetPasswordToken = undefined;
+    emp.resetPasswordExpire = undefined;
+
+    await emp.save({ validateBeforeSave: false });
+
+    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
+  }
+});
+
+//@desc     Reset password
+//@route    PUT /api/v1/admin/resetpassword/:resetToken
+//@access   public
+empAuthController.resetPassword = asyncHandler(async (req, res, next) => {
+  //Get hashed Token
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  const user = await Employee.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new ErrorResponse("Invalid token", 400));
+  }
+
+  //Let's set a new password
+  user.emp_password = req.body.emp_password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  sendToken(user, 200, res);
 });
 
 //custom function to get the jwt token and create a cookie and send response

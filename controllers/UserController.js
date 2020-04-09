@@ -17,6 +17,36 @@ exports.defUser = (req, res, next) => {
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password, role } = req.body;
 
+  //sending confirmation mail
+  const message = `Welcome To ${process.env.FROM_NAME} family,
+
+  We welcome you to our small family. We hope you and your Ngo can help us create a better world
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nononvallis. 
+  Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.
+  This is your username and pssword. Let change the world together.
+
+  Email:  ${email}
+  Password:  ${password}
+
+  Thank You,
+  ${process.env.FROM_NAME}
+  ${process.env.DUMMY_ADDRESS},
+  ${process.env.DUMMY_CITY},
+  ${process.env.DUMMY_STATE},
+  Zip Code: ${process.env.DUMMY_ZIPCODE},
+  Phone Number: ${process.env.DUMMY_PHONE_NUMBER}
+  Locate Us: ${process.env.DUMMY_MAP_LOCATION}
+  `;
+  try {
+    await sendEmail({
+      email: email,
+      subject: "Hi This is Jane Doe form Social Bee",
+      message,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
+  }
   // Create user
   const user = await User.create({
     name,
@@ -92,8 +122,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     "host"
   )}/api/v1/auth/resetpassword/${resetToken}`;
 
-  const message = `You are receiving this email from SocialBee because you have requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}
-  \n\n  in next 10 minutes`;
+  const message = `You are receiving this email from SocialBee because you have requested the reset of a password. Copy paste the link in your broswer to reset your password: \n\n ${resetUrl}
+  \n\n  Link will expire in next 10 minutes`;
   try {
     await sendEmail({
       email: user.email,

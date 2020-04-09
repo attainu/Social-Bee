@@ -38,9 +38,6 @@ adminRouter.route("/show/employee/profile").get(AdminAuthProtect, MyProfile);
 //displaying all employee data route
 adminRouter.route("/show/employee").get(AdminAuthProtect, showAllEmp);
 
-//forgot password route
-adminRouter.route("/forgotpassword").post(ForgotPassword);
-
 //displaying one department data
 adminRouter.route("/show/department/:id").get(AdminAuthProtect, showOneDep);
 

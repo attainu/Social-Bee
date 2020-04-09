@@ -1,5 +1,9 @@
-//importing the custom error response module
+//importing crypto
+const crypto = require("crypto");
+
+//importing utilities
 const ErrorResponse = require("../utils/error_response");
+const sendEmail = require("../utils/sendEmail");
 
 //importing the asyncHandler module
 const asyncHandler = require("../middlewares/async_handler");
@@ -147,31 +151,6 @@ empController.MyProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: user,
-  });
-});
-
-//@desc     Employee Forgot password
-//@route    POST /api/v1/admin/forgotpassword
-//@access   public
-empController.ForgotPassword = asyncHandler(async (req, res, next) => {
-  const { emp_email } = req.body;
-  const emp = await Employee.findOne({ emp_email });
-
-  if (!emp) {
-    //if condition to check if id exsists or not the database
-    return next(
-      new ErrorResponse(
-        `Document or Record not found with email:${req.body.email}. Check Email`,
-        404
-      )
-    );
-  }
-  //get reset token
-  const resetToken = emp.getResetToken();
-  await emp.save({ validateBeforeSave: false });
-  res.status(200).json({
-    success: true,
-    data: emp,
   });
 });
 
