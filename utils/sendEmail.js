@@ -11,7 +11,7 @@ const sendEmail = async options => {
   });
 
   const message = {
-    from: `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
+    from:process.env.FROM_EMAIL,
     to: options.email, //list of receivers
     subject: options.subject, //subject line
     text: options.message //plain text body
@@ -23,3 +23,9 @@ const sendEmail = async options => {
 };
 
 module.exports = sendEmail;
+
+
+
+
+//piece of code to chekc later 
+// `${process.env.FROM_NAME} <${process.env.FROM_EMAIL}>`,
