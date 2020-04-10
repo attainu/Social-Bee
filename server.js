@@ -6,6 +6,12 @@ const dotenv = require("dotenv");
 const colors = require("colors");
 const coookieParser = require("cookie-parser");
 const fileupload = require("express-fileupload");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const xssClean = require("xss-clean");
+const ratelimt = require("express-rate-limit");
+const hpp = require("hpp");
+const cors = require("cors");
 
 //importing the DB connection localhost/Atlas in the server file
 const connectDB = require("./config/db");
@@ -58,10 +64,30 @@ app.use(express.urlencoded({ extended: false }));
 //file uploading middleware
 app.use(fileupload());
 
+//setting up the mongo-sanetize middleware to prevent NoSql injections and makeing the api hacker proof
+app.use(mongoSanitize());
+
+//setting up the helmet middleware to add header security features
+app.use(helmet());
+
+//setting up the xxs-clean middleware to prevent XSS attacks
+app.use(xssClean());
+
+//setting up the rate limiter middleware this will not allow more than 100 request in 10 mins to our api
+const limiter = ratelimt({
+  windowMs: 1060 * 1000, //10 mins
+  max: 100,
+});
+app.use(limiter);
+
+//setting up the hpp middleware that will prevent HTTP Parameter Pollution attacks
+app.use(hpp());
+
+//setting up the cors middleware to implement Search Results Cross-Origin Resource Sharing (CORS)
+app.use(cors());
+
 //custom logger middleaware not so important does exactly what morgan does but in rudamentry manner. I made it just for fun.
 app.use(logger);
-
-//setting up the ngo routes
 
 //mounting the route to a default path
 app.use("/api/v1/admin", admin, adminAuth);

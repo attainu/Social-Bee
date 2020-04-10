@@ -102,6 +102,20 @@ empAuthController.login = asyncHandler(async (req, res, next) => {
   sendToken(empData, 200, res);
 });
 
+//@desc     Admin Logout /clear cookie
+//@route    GET /api/v1/admin/logout
+//@access   private
+empAuthController.logout = asyncHandler(async (req, res, next) => {
+  res.cookie("token", "none", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});
+
 //@desc     Employee Forgot password
 //@route    POST /api/v1/admin/forgotpassword
 //@access   public

@@ -1,3 +1,4 @@
+const path = require("path");
 const User = require("../models/user_models/user");
 const ErrorResponse = require("../utils/error_response");
 const asyncHandler = require("../middlewares/async_handler");
@@ -23,7 +24,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   We welcome you to our small family. We hope you and your Ngo can help us create a better world
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nononvallis. 
   Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.
-  This is your username and pssword. Let change the world together.
+  This is your username and pssword. Let's change the world together.
 
   Email:  ${email}
   Password:  ${password}
@@ -173,22 +174,63 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
-// @desc      Update User Profile Picture from the Default picture
-// @route     PUT /api/v1/auth/updatedprofilepic
-// @access    Private
+//@desc      Update User Profile Picture from the Default picture
+//@route    PUT /api/v1/auth/updatedprofilepic
+//@access   private
 exports.updateprofilepic = asyncHandler(async (req, res, next) => {
-  const fieldsToUpdate = {
-    profilepic: req.body.profilepic,
-  };
+  let user = await User.findById(req.user.id);
 
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true,
-  });
+  //if condition to check if id exsists or not the database
+  if (!user) {
+    return next(
+      new ErrorResponse(
+        `Document or Record not found with id:${req.params.id}. Check ID`,
+        404
+      )
+    );
+  }
 
-  res.status(200).json({
-    success: true,
-    data: user,
+  //if conditionto check a file was uploaded or not
+  if (!req.files) {
+    return next(
+      new ErrorResponse(`Please select a image or Photo to upload`, 400)
+    );
+  }
+
+  //storing the file object recived form postman in an variable
+  const file = req.files.file;
+
+  //checking to see if the file sent is an image or not
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Plese select and image file`, 415));
+  }
+
+  //checking if the image file size is more than 2 mb or not
+  if (file.size > process.env.MAX_FILE_SIZE) {
+    return next(
+      new ErrorResponse(
+        `Image size can not be more than ${process.env.MAX_FILE_SIZE} bytes i.e ${process.env.MAX_FILE_SIZE_MB}MB`,
+        413
+      )
+    );
+  }
+
+  //creating a custom file name to stroe in databse so that nameing conflicts doesn't happen if 2 or more user upload the same image file.
+  file.name = `photo_${user._id}${path.parse(file.name).ext}`;
+
+  //uploading the file in the database
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(
+        new ErrorResponse(`Server Error: File could not uploaded`, 500)
+      );
+    }
+    await User.findByIdAndUpdate(req.user.id, {
+      profilepic: `photos/${file.name}`,
+    });
+
+    res.status(200).json({ success: "Image uploaded", data: file.name });
   });
 });
 

@@ -10,7 +10,7 @@ const errorHandler = (err, req, res, next) => {
 
   //checking for badly formated object id
   if (err.name === "CastError") {
-    const message = `Document or Record not found with id:${err.value}. Wrong ID formate`;
+    const message = `Document or Record not found. Wrong ID formate`;
     error = new ErrorResponse(message, 404);
   }
 
@@ -22,7 +22,7 @@ const errorHandler = (err, req, res, next) => {
 
   //checking for all validation error
   if (err.name === "ValidationError") {
-    const message = Object.values(err.errors).map(val => val.message);
+    const message = Object.values(err.errors).map((val) => val.message);
     error = new ErrorResponse(message, 422);
   }
   res

@@ -13,8 +13,8 @@ exports.AdminAuthProtect = asyncHandler(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     authToken = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.token) {
-    authToken = req.coookies.token;
+  } else if (req.cookies.authToken) {
+    authToken = req.coookies.authToken;
   }
 
   //Making sure Token exists

@@ -18,7 +18,11 @@ var {
   deleteEmp,
   deleteDep,
   deleteUser,
-  ForgotPassword,
+  showAllUser,
+  showOneUser,
+  showAllNgo,
+  showOneNgo,
+  deleteNgo,
 } = require("../controllers/adminController");
 
 //defining the routes
@@ -38,11 +42,23 @@ adminRouter.route("/show/employee/profile").get(AdminAuthProtect, MyProfile);
 //displaying all employee data route
 adminRouter.route("/show/employee").get(AdminAuthProtect, showAllEmp);
 
+//displaying all user data route
+adminRouter.route("/show/users").get(AdminAuthProtect, showAllUser);
+
+//displaying all ngo data route
+adminRouter.route("/show/ngo").get(AdminAuthProtect, showAllNgo);
+
 //displaying one department data
 adminRouter.route("/show/department/:id").get(AdminAuthProtect, showOneDep);
 
 //displaying one employee data
 adminRouter.route("/show/employee/:id").get(AdminAuthProtect, showOneEmp);
+
+//displaying one user data
+adminRouter.route("/show/user/:id").get(AdminAuthProtect, showOneUser);
+
+//displaying one Ngo data
+adminRouter.route("/show/ngo/:id").get(AdminAuthProtect, showOneNgo);
 
 //updating one employee data
 adminRouter.route("/update/employee/:id").put(AdminAuthProtect, updateEmp);
@@ -60,6 +76,9 @@ adminRouter.route("/delete/department/:id").delete(AdminAuthProtect, deleteDep);
 
 //deleting a user data
 adminRouter.route("/delete/user/:id").delete(AdminAuthProtect, deleteUser);
+
+//deleting a ngo data
+adminRouter.route("/delete/ngo/:id").delete(AdminAuthProtect, deleteNgo);
 
 //exporting the router module
 module.exports = adminRouter;

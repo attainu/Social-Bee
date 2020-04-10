@@ -9,6 +9,7 @@ var {
   login,
   ForgotPassword,
   resetPassword,
+  logout,
 } = require("../controllers/admin_auth_controller");
 
 //defining the routes
@@ -19,6 +20,8 @@ adminAuthRouter.route("/").get(defAuthAdmin);
 adminAuthRouter.route("/signup").post(signup);
 //login route
 adminAuthRouter.route("/login").post(login);
+//logout route
+adminAuthRouter.route("/logout").get(logout);
 //forgot password route
 adminAuthRouter.route("/forgotpassword").post(ForgotPassword);
 //reset password route

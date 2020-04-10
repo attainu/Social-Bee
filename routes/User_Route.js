@@ -7,7 +7,7 @@ const {
   getMe,
   forgotPassword,
   resetPassword,
-  updateprofilepic
+  updateprofilepic,
   // updatePassword
 } = require("../controllers/userController");
 
