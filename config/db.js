@@ -10,7 +10,7 @@ const connectDB = async () => {
       useFindAndModify: true,
     });
     console.log(
-      `MongoDB is up @ MongoAtlas :${conn.connection.host}`.green.underline.bold
+      `MONGODB IS UP @ MONGO_ATLAS : " ${conn.connection.host} "`
     );
   } catch (error) {
     console.error(error);

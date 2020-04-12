@@ -11,7 +11,7 @@ const asyncHandler = require("../middlewares/async_handler");
 //importing the admin model schemas
 const Employee = require("../models/admin_models/emp");
 const EmpDepartment = require("../models/admin_models/emp_department");
-const User = require("../models/user_models/user");
+const User = require("../models/user_models/User");
 const Ngo = require("../models/ngo_models/ngoData");
 
 //declaring an empty object to store and export the methods

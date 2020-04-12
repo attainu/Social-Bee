@@ -1,15 +1,15 @@
-const path = require("path");
-const User = require("../models/user_models/user");
-const ErrorResponse = require("../utils/error_response");
-const asyncHandler = require("../middlewares/async_handler");
-const sendEmail = require("../utils/sendEmail");
-const crypto = require("crypto"); //this is a builtin in express ,need not add
+const path = require('path');
+const User = require('../models/user_models/User');
+const ErrorResponse = require('../utils/error_response');
+const asyncHandler = require('../middlewares/async_handler');
+const sendEmail = require('../utils/sendEmail');
+const crypto = require('crypto'); //this is a builtin in express ,need not add
 
 //@desc     Default admin route
 //@route    GET /api/v1/user
 //@access   public
 exports.defUser = (req, res, next) => {
-  res.status(200).json({ success: true, message: "Welcome to Social-Bee" });
+  res.status(200).json({ success: true, message: 'Welcome to Social-Bee' });
 };
 
 // @desc      Register user
@@ -25,10 +25,13 @@ exports.register = asyncHandler(async (req, res, next) => {
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nononvallis. 
   Phasellus ac lorem in nibh accumsan ultricies et euismod tellus. Morbi blandit et quam et rhoncus. Pellentesque scelerisque nunc non mi feugiat tempus.
   This is your username and pssword. Let's change the world together.
-
+  
+  This is our Company Brouchre to give you a better idea about our Product ${process.env.DUMMY_PDF}
   Email:  ${email}
   Password:  ${password}
 
+
+ 
   Thank You,
   ${process.env.FROM_NAME}
   ${process.env.DUMMY_ADDRESS},
@@ -41,12 +44,12 @@ exports.register = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       email: email,
-      subject: "Hi This is Jane Doe form Social Bee",
+      subject: 'Hi This is Nikita Ayyar from Social Bee',
       message,
     });
   } catch (err) {
     console.log(err);
-    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
+    return next(new ErrorResponse('Email could not be sent,Sorry', 500));
   }
   // Create user
   const user = await User.create({
@@ -60,40 +63,40 @@ exports.register = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Login user
-// @route     POST /api/v1/auth/login
+// @route     POST /api/v1/user/login
 // @access    Public
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   // Validate emil & password
   if (!email || !password) {
-    return next(new ErrorResponse("Please provide an email and password", 400));
+    return next(new ErrorResponse('Please provide an email and password', 400));
   }
 
   // Check for user
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }).select('+password');
 
   if (!user) {
-    return next(new ErrorResponse("Invalid credentials", 401));
+    return next(new ErrorResponse('Invalid credentials', 401));
   }
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
 
   if (!isMatch) {
-    return next(new ErrorResponse("Invalid credentials", 401));
+    return next(new ErrorResponse('Invalid credentials', 401));
   }
 
   sendTokenResponse(user, 200, res);
 });
 
 // @desc      Get current logged in user
-// @route     POST /api/v1/auth/me
+// @route     POST /api/v1/user/me
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id).populate({
-    path: "ngoOwned",
-    select: "ngoName ngoDescription ngoRegistrationNumber ngoFounded",
+    path: 'ngoOwned',
+    select: 'ngoName ngoDescription ngoRegistrationNumber ngoFounded',
   });
 
   res.status(200).json({
@@ -103,13 +106,13 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Forgot password
-// @route     POST /api/v1/auth/forgotpassword
+// @route     POST /api/v1/user/forgotpassword
 // @access    Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new ErrorResponse("There is no user with that email", 404));
+    return next(new ErrorResponse('There is no user with that email', 404));
   }
 
   // Get reset token
@@ -120,21 +123,21 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
   // Create reset url  http
   const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/auth/resetpassword/${resetToken}`;
+    'host'
+  )}/api/v1/user/resetpassword/${resetToken}`;
 
   const message = `You are receiving this email from SocialBee because you have requested the reset of a password. Copy paste the link in your broswer to reset your password: \n\n ${resetUrl}
   \n\n  Link will expire in next 10 minutes`;
   try {
     await sendEmail({
       email: user.email,
-      subject: "Password reset token",
+      subject: 'Password reset token',
       message,
     });
 
     res
       .status(200)
-      .json({ success: true, data: "Email has been sent.Please check" });
+      .json({ success: true, data: 'Email has been sent.Please check' });
   } catch (err) {
     console.log(err);
     user.resetPasswordToken = undefined;
@@ -142,19 +145,19 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    return next(new ErrorResponse("Email could not be sent,Sorry", 500));
+    return next(new ErrorResponse('Email could not be sent,Sorry', 500));
   }
 });
 
 // @desc     Reset password
-// @route     PUT /api/v1/auth/resetpassword/:resettoken
+// @route     PUT /api/v1/user/resetpassword/:resettoken
 // @access    Public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   //Get hashed Token
   const resetPasswordToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(req.params.resettoken)
-    .digest("hex");
+    .digest('hex');
 
   const user = await User.findOne({
     resetPasswordToken,
@@ -162,7 +165,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return next(new ErrorResponse("Invalid token", 400));
+    return next(new ErrorResponse('Invalid token', 400));
   }
 
   //Let's set a new password
@@ -175,7 +178,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 //@desc      Update User Profile Picture from the Default picture
-//@route    PUT /api/v1/auth/updatedprofilepic
+//@route    PUT /api/v1/user/updatedprofilepic
 //@access   private
 exports.updateprofilepic = asyncHandler(async (req, res, next) => {
   let user = await User.findById(req.user.id);
@@ -201,7 +204,7 @@ exports.updateprofilepic = asyncHandler(async (req, res, next) => {
   const file = req.files.file;
 
   //checking to see if the file sent is an image or not
-  if (!file.mimetype.startsWith("image")) {
+  if (!file.mimetype.startsWith('image')) {
     return next(new ErrorResponse(`Plese select and image file`, 415));
   }
 
@@ -230,7 +233,19 @@ exports.updateprofilepic = asyncHandler(async (req, res, next) => {
       profilepic: `photos/${file.name}`,
     });
 
-    res.status(200).json({ success: "Image uploaded", data: file.name });
+    res.status(200).json({ success: 'Image uploaded', data: file.name });
+  });
+});
+
+exports.logout = asyncHandler(async (req, res, next) => {
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {},
   });
 });
 
@@ -247,36 +262,12 @@ const sendTokenResponse = (user, statusCode, res) => {
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === 'production') {
     options.secure = true;
   }
 
-  res.status(statusCode).cookie("token", token, options).json({
-    success: "This is the cookie token",
+  res.status(statusCode).cookie('token', token, options).json({
+    success: 'This is the cookie token',
     UserToken: token,
   });
 };
-
-//
-//
-//
-//
-//
-//
-
-// @desc      Update password
-// @route     PUT /api/v1/auth/updatepassword
-// @access
-// exports.updatePassword = asyncHandler(async (req, res, next) => {
-//   const user = await User.findById(req.user.id).select('+password');
-
-//   // Check current password
-//   if (!(await user.matchPassword(req.body.currentPassword))) {
-//     return next(new ErrorResponse('Password is incorrect', 401));
-//   }
-
-//   user.password = req.body.newPassword;
-//   await user.save();
-
-//   sendTokenResponse(user, 200, res);
-// });
