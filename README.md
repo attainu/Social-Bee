@@ -1,11 +1,11 @@
-# [Social-Bee](https://documenter.getpostman.com/view/10188842/SzezdC3f?version=latest)
+# [Social-Bee](https://socialbee.netlify.com)
 
 [![Social-Bee-API-Google-Slides.png](https://i.postimg.cc/hv1T5zdK/Social-Bee-API-Google-Slides.png)](https://postimg.cc/4HnYK3P0)
 
 
 > SocialBee is a Backend API for NGOs Data that is collected,oranised,grouped and carefully assimilated after authenticating the Provider and actively managed by a diverse-departmental-hierrarchial administration   
 
-# [DOCUMENTATION OF SOCIAL BEE WITH ENDPOINTS](https://documenter.getpostman.com/view/10188842/SzezdC3f?version=latest)
+# [DOCUMENTATION OF SOCIAL BEE WITH ENDPOINTS](https://socialbee.netlify.com)
 
 # [DEMONSTRATION OF SOCIAL BEE ](https://docs.google.com/presentation/d/1tzB1_iOxGFR_6ykABPPRYUAgDdccUGIaT_bRdfWAO5M/edit?usp=sharing)
 
